@@ -52,8 +52,8 @@
 #include "util/storage/slabhash.h"
 #include "sldns/sbuffer.h"
 
-int 
-context_finalize(struct ub_ctx* ctx)
+int
+_ub_context_finalize(struct ub_ctx* ctx)
 {
 	struct config_file* cfg = ctx->env->cfg;
 	verbosity = cfg->verbosity;
@@ -99,7 +99,7 @@ context_finalize(struct ub_ctx* ctx)
 	return UB_NOERROR;
 }
 
-int context_query_cmp(const void* a, const void* b)
+int _ub_context_query_cmp(const void* a, const void* b)
 {
 	if( *(int*)a < *(int*)b )
 		return -1;
@@ -109,7 +109,7 @@ int context_query_cmp(const void* a, const void* b)
 }
 
 void
-context_query_delete(struct ctx_query* q) 
+_ub_context_query_delete(struct ctx_query* q)
 {
 	if(!q) return;
 	ub_resolve_free(q->res);
@@ -135,7 +135,7 @@ find_id(struct ub_ctx* ctx, int* id)
 }
 
 struct ctx_query* 
-context_new(struct ub_ctx* ctx, const char* name, int rrtype, int rrclass, 
+_ub_context_new(struct ub_ctx* ctx, const char* name, int rrtype, int rrclass,
 	ub_callback_type cb, ub_event_callback_type cb_event, void* cbarg)
 {
 	struct ctx_query* q = (struct ctx_query*)calloc(1, sizeof(*q));
@@ -176,7 +176,7 @@ context_new(struct ub_ctx* ctx, const char* name, int rrtype, int rrclass,
 }
 
 struct alloc_cache* 
-context_obtain_alloc(struct ub_ctx* ctx, int locking)
+_ub_context_obtain_alloc(struct ub_ctx* ctx, int locking)
 {
 	struct alloc_cache* a;
 	int tnum = 0;
@@ -202,7 +202,7 @@ context_obtain_alloc(struct ub_ctx* ctx, int locking)
 }
 
 void 
-context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
+_ub_context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
 	int locking)
 {
 	if(!ctx || !alloc)
@@ -218,7 +218,7 @@ context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
 }
 
 uint8_t* 
-context_serialize_new_query(struct ctx_query* q, uint32_t* len)
+_ub_context_serialize_new_query(struct ctx_query* q, uint32_t* len)
 {
 	/* format for new query is
 	 * 	o uint32 cmd
@@ -241,7 +241,7 @@ context_serialize_new_query(struct ctx_query* q, uint32_t* len)
 }
 
 struct ctx_query* 
-context_deserialize_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
+_ub_context_deserialize_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
 {
 	struct ctx_query* q = (struct ctx_query*)calloc(1, sizeof(*q));
 	if(!q) return NULL;
@@ -274,7 +274,7 @@ context_deserialize_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
 }
 
 struct ctx_query* 
-context_lookup_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
+_ub_context_lookup_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
 {
 	struct ctx_query* q;
 	int querynum;
@@ -292,7 +292,7 @@ context_lookup_new_query(struct ub_ctx* ctx, uint8_t* p, uint32_t len)
 }
 
 uint8_t* 
-context_serialize_answer(struct ctx_query* q, int err, sldns_buffer* pkt,
+_ub_context_serialize_answer(struct ctx_query* q, int err, sldns_buffer* pkt,
 	uint32_t* len)
 {
 	/* answer format
@@ -328,7 +328,7 @@ context_serialize_answer(struct ctx_query* q, int err, sldns_buffer* pkt,
 }
 
 struct ctx_query* 
-context_deserialize_answer(struct ub_ctx* ctx,
+_ub_context_deserialize_answer(struct ub_ctx* ctx,
         uint8_t* p, uint32_t len, int* err)
 {
 	size_t size_of_uint32s = 6 * sizeof(uint32_t);
@@ -371,7 +371,7 @@ context_deserialize_answer(struct ub_ctx* ctx,
 }
 
 uint8_t* 
-context_serialize_cancel(struct ctx_query* q, uint32_t* len)
+_ub_context_serialize_cancel(struct ctx_query* q, uint32_t* len)
 {
 	/* format of cancel:
 	 * 	o uint32 cmd
@@ -384,7 +384,7 @@ context_serialize_cancel(struct ctx_query* q, uint32_t* len)
 	return p;
 }
 
-struct ctx_query* context_deserialize_cancel(struct ub_ctx* ctx,
+struct ctx_query* _ub_context_deserialize_cancel(struct ub_ctx* ctx,
         uint8_t* p, uint32_t len)
 {
 	struct ctx_query* q;
@@ -397,7 +397,7 @@ struct ctx_query* context_deserialize_cancel(struct ub_ctx* ctx,
 }
 
 uint8_t* 
-context_serialize_quit(uint32_t* len)
+_ub_context_serialize_quit(uint32_t* len)
 {
 	uint32_t* p = (uint32_t*)malloc(sizeof(uint32_t));
 	if(!p)
@@ -407,7 +407,7 @@ context_serialize_quit(uint32_t* len)
 	return (uint8_t*)p;
 }
 
-enum ub_ctx_cmd context_serial_getcmd(uint8_t* p, uint32_t len)
+enum ub_ctx_cmd _ub_context_serial_getcmd(uint8_t* p, uint32_t len)
 {
 	uint32_t v;
 	if((size_t)len < sizeof(v))

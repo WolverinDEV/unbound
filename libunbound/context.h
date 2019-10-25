@@ -224,21 +224,24 @@ enum ub_ctx_cmd {
 	UB_LIBCMD_ANSWER
 };
 
-/** 
+/**
  * finalize a context.
  * @param ctx: context to finalize. creates shared data.
  * @return 0 if OK, or errcode.
  */
-int context_finalize(struct ub_ctx* ctx);
+#define context_finalize _ub_context_finalize
+int _ub_context_finalize(struct ub_ctx* ctx);
 
 /** compare two ctx_query elements */
-int context_query_cmp(const void* a, const void* b);
+#define context_query_cmp _ub_context_query_cmp
+int _ub_context_query_cmp(const void* a, const void* b);
 
 /** 
  * delete context query
  * @param q: query to delete, including message packet and prealloc result
  */
-void context_query_delete(struct ctx_query* q);
+#define context_query_delete _ub_context_query_delete
+void _ub_context_query_delete(struct ctx_query* q);
 
 /**
  * Create new query in context, add to querynum list.
@@ -251,7 +254,8 @@ void context_query_delete(struct ctx_query* q);
  * @param cbarg: user arg for async queries.
  * @return new ctx_query or NULL for malloc failure.
  */
-struct ctx_query* context_new(struct ub_ctx* ctx, const char* name, int rrtype,
+#define context_new _ub_context_new
+struct ctx_query* _ub_context_new(struct ub_ctx* ctx, const char* name, int rrtype,
         int rrclass,  ub_callback_type cb, ub_event_callback_type cb_event,
 	void* cbarg);
 
@@ -261,7 +265,8 @@ struct ctx_query* context_new(struct ub_ctx* ctx, const char* name, int rrtype,
  * @param locking: if true, cfglock is locked while getting alloc.
  * @return an alloc, or NULL on mem error.
  */
-struct alloc_cache* context_obtain_alloc(struct ub_ctx* ctx, int locking);
+#define context_obtain_alloc _ub_context_obtain_alloc
+struct alloc_cache* _ub_context_obtain_alloc(struct ub_ctx* ctx, int locking);
 
 /**
  * Release an alloc. Puts it into the cache.
@@ -269,7 +274,8 @@ struct alloc_cache* context_obtain_alloc(struct ub_ctx* ctx, int locking);
  * @param locking: if true, cfglock is locked while releasing alloc.
  * @param alloc: alloc to relinquish.
  */
-void context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
+#define context_release_alloc _ub_context_release_alloc
+void _ub_context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
 	int locking);
 
 /**
@@ -280,10 +286,11 @@ void context_release_alloc(struct ub_ctx* ctx, struct alloc_cache* alloc,
  * @param len: the length of the allocation is returned.
  * @return: an alloc, or NULL on mem error.
  */
-uint8_t* context_serialize_new_query(struct ctx_query* q, uint32_t* len);
+#define context_serialize_new_query _ub_context_serialize_new_query
+uint8_t* _ub_context_serialize_new_query(struct ctx_query* q, uint32_t* len);
 
 /**
- * Serialize a context_query result to hand back to user.
+ * Serialize a _ub_context_query result to hand back to user.
  * This serializes the query name, type, ..., and result.
  * As well as command code 'answer'.
  * @param q: context query
@@ -292,7 +299,8 @@ uint8_t* context_serialize_new_query(struct ctx_query* q, uint32_t* len);
  * @param len: the length of the allocation is returned.
  * @return: an alloc, or NULL on mem error.
  */
-uint8_t* context_serialize_answer(struct ctx_query* q, int err, 
+#define context_serialize_answer _ub_context_serialize_answer
+uint8_t* _ub_context_serialize_answer(struct ctx_query* q, int err,
 	struct sldns_buffer* pkt, uint32_t* len);
 
 /**
@@ -302,14 +310,16 @@ uint8_t* context_serialize_answer(struct ctx_query* q, int err,
  * @param len: the length of the allocation is returned.
  * @return: an alloc, or NULL on mem error.
  */
-uint8_t* context_serialize_cancel(struct ctx_query* q, uint32_t* len);
+#define context_serialize_cancel _ub_context_serialize_cancel
+uint8_t* _ub_context_serialize_cancel(struct ctx_query* q, uint32_t* len);
 
 /**
  * Serialize a 'quit' command.
  * @param len: the length of the allocation is returned.
  * @return: an alloc, or NULL on mem error.
  */
-uint8_t* context_serialize_quit(uint32_t* len);
+#define context_serialize_quit _ub_context_serialize_quit
+uint8_t* _ub_context_serialize_quit(uint32_t* len);
 
 /**
  * Obtain command code from serialized buffer
@@ -317,7 +327,8 @@ uint8_t* context_serialize_quit(uint32_t* len);
  * @param len: length of buffer.
  * @return command code or QUIT on error.
  */
-enum ub_ctx_cmd context_serial_getcmd(uint8_t* p, uint32_t len);
+#define context_serial_getcmd _ub_context_serial_getcmd
+enum ub_ctx_cmd _ub_context_serial_getcmd(uint8_t* p, uint32_t len);
 
 /**
  * Lookup query from new_query buffer.
@@ -326,7 +337,8 @@ enum ub_ctx_cmd context_serial_getcmd(uint8_t* p, uint32_t len);
  * @param len: length of buffer.
  * @return looked up ctx_query or NULL for malloc failure.
  */
-struct ctx_query* context_lookup_new_query(struct ub_ctx* ctx, 
+#define context_lookup_new_query _ub_context_lookup_new_query
+struct ctx_query* _ub_context_lookup_new_query(struct ub_ctx* ctx,
 	uint8_t* p, uint32_t len);
 
 /**
@@ -336,7 +348,8 @@ struct ctx_query* context_lookup_new_query(struct ub_ctx* ctx,
  * @param len: length of buffer.
  * @return new ctx_query or NULL for malloc failure.
  */
-struct ctx_query* context_deserialize_new_query(struct ub_ctx* ctx, 
+#define context_deserialize_new_query _ub_context_deserialize_new_query
+struct ctx_query* _ub_context_deserialize_new_query(struct ub_ctx* ctx,
 	uint8_t* p, uint32_t len);
 
 /**
@@ -347,7 +360,8 @@ struct ctx_query* context_deserialize_new_query(struct ub_ctx* ctx,
  * @param err: error code to be returned to client is passed.
  * @return ctx_query with answer added or NULL for malloc failure.
  */
-struct ctx_query* context_deserialize_answer(struct ub_ctx* ctx, 
+#define context_deserialize_answer _ub_context_deserialize_answer
+struct ctx_query* _ub_context_deserialize_answer(struct ub_ctx* ctx,
 	uint8_t* p, uint32_t len, int* err);
 
 /**
@@ -357,7 +371,8 @@ struct ctx_query* context_deserialize_answer(struct ub_ctx* ctx,
  * @param len: length of buffer.
  * @return ctx_query to cancel or NULL for failure.
  */
-struct ctx_query* context_deserialize_cancel(struct ub_ctx* ctx, 
+#define context_deserialize_cancel _ub_context_deserialize_cancel
+struct ctx_query* _ub_context_deserialize_cancel(struct ub_ctx* ctx,
 	uint8_t* p, uint32_t len);
 
 #endif /* LIBUNBOUND_CONTEXT_H */
